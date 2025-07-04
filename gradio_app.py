@@ -35,7 +35,7 @@ try:
 except Exception as e:
     # Capture the error message here
     error_message_sent = f"Error loading Sentiment Search: {e}"
-    sent_search_demo_block = gr.Interface(lambda: error_message_sector, [], "text")
+    sent_search_block = gr.Interface(lambda: error_message_sent, [], "text")
     print(error_message_sent) # Add print for debugging
 
 # --- New Import for Due Diligence ---
