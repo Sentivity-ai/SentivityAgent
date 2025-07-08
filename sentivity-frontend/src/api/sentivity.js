@@ -1,6 +1,12 @@
 import axios from 'axios';
+import { createClient } from '@supabase/supabase-js';
 
 const API_BASE = 'http://localhost:8000';
+
+export const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_KEY
+);
 
 export const getPosts = async (params = {}) => {
   const res = await axios.get(`${API_BASE}/posts/`, { params });

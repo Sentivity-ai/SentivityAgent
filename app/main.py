@@ -12,7 +12,7 @@ from app.models import Base
 from app.schemas import HealthResponse
 
 # Import routes
-from app.routes import scrape, posts, sentiment
+from app.routes import scrape, posts, sentiment, agent
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -39,6 +39,7 @@ app.add_middleware(
 app.include_router(scrape.router, prefix="/scrape", tags=["scraping"])
 app.include_router(posts.router, prefix="/posts", tags=["posts"])
 app.include_router(sentiment.router, prefix="/sentiment", tags=["sentiment"])
+app.include_router(agent.router, prefix="/api")
 
 @app.get("/", response_model=HealthResponse)
 async def health_check():

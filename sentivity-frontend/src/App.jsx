@@ -8,6 +8,8 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { getPosts, getCategories } from './api/sentivity.js';
+import Login from './components/Login.jsx';
+import { supabase } from './api/sentivity';
 
 const drawerWidth = 220;
 
@@ -324,6 +326,19 @@ function DueDiligence() {
 }
 
 export default function App() {
+  const [session, setSession] = React.useState(null);
+  React.useEffect(() => {
+    setSession(supabase.auth.session());
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+    return () => listener?.unsubscribe();
+  }, []);
+
+  if (!session) {
+    return <Login onLogin={() => setSession(supabase.auth.session())} />;
+  }
+
   return (
     <Router>
       <Box sx={{ display: 'flex', bgcolor: '#181c27', minHeight: '100vh' }}>

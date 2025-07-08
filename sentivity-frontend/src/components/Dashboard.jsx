@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, Card, CardContent, Typography, CircularProgress, Alert, Skeleton, Avatar, List, ListItem, ListItemAvatar, ListItemText, Paper } from '@mui/material';
+import { Box, Grid, Card, CardContent, Typography, CircularProgress, Alert, Skeleton, Avatar, List, ListItem, ListItemAvatar, ListItemText, Paper, Button } from '@mui/material';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import ForumIcon from '@mui/icons-material/Forum';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
@@ -24,6 +24,24 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownloadPDF = async () => {
+    setDownloading(true);
+    try {
+      const res = await axios.get('http://localhost:8000/api/agent-report?ticker=AAPL', { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'due_diligence_report.pdf');
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (err) {
+      alert('Failed to download PDF');
+    }
+    setDownloading(false);
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -142,6 +160,9 @@ export default function Dashboard() {
           </Card>
         </Grid>
       </Grid>
+      <Button variant="contained" color="error" onClick={handleDownloadPDF} sx={{ fontWeight: 700, mt: 2 }} disabled={downloading}>
+        {downloading ? <CircularProgress size={24} color="inherit" /> : 'Download Due Diligence PDF'}
+      </Button>
     </Box>
   );
 } 
